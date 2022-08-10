@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace DocumentFormatter.Core.Formatters
 {
@@ -9,6 +10,8 @@ namespace DocumentFormatter.Core.Formatters
         public string ReplacementValue { get; set; }
 
         public bool AllowPartialMatch { get; set; }
+
+        public string RequiredParent { get; set; }
     }
 
     public class TextFormatter : FormatterBase
@@ -24,26 +27,32 @@ namespace DocumentFormatter.Core.Formatters
 
         public override void Format(FormattingContext context)
         {
-            var result = TryGetReplacement(context.Element.Value, out var replacement);
+            var result = TryGetReplacement(context.Element.Value, context.ElementsStack, out var replacement);
             var value = result ? replacement : context.Element.Value;
 
             context.Writer.Write(value);
             context.InnerElementsHandler.Invoke(context.Element);
         }
 
-        private bool TryGetReplacement(string elementValue, out string formattedString)
+        private static bool CheckReplacement(Replacement replacement, string elementValue, Stack<string> elementsStack)
         {
-            foreach (var replacement in _replacements)
+            if (!string.IsNullOrEmpty(replacement.RequiredParent) && !elementsStack.Contains(replacement.RequiredParent))
             {
-                var result = replacement.AllowPartialMatch
-                    ? elementValue.Contains(replacement.SearchValue)
-                    : elementValue == replacement.SearchValue;
+                return false;
+            }
 
-                if (result)
-                {
-                    formattedString = elementValue.Replace(replacement.SearchValue, replacement.ReplacementValue);
-                    return true;
-                }
+            return replacement.AllowPartialMatch
+                ? elementValue.Contains(replacement.SearchValue)
+                : elementValue == replacement.SearchValue;
+        }
+
+        private bool TryGetReplacement(string elementValue, Stack<string> elementsStack, out string formattedString)
+        {
+            var replacement = _replacements.FirstOrDefault(x => CheckReplacement(x, elementValue, elementsStack));
+            if (replacement != null)
+            {
+                formattedString = elementValue.Replace(replacement.SearchValue, replacement.ReplacementValue);
+                return true;
             }
 
             formattedString = default;
