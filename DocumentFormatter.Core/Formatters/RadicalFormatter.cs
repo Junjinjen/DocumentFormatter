@@ -20,7 +20,7 @@ namespace DocumentFormatter.Core.Formatters
             FormatWithoutIndex(radicandElement, context);
         }
 
-        private void FormatWithIndex(XElement radicandElement, XElement indexElement, FormattingContext context)
+        private static void FormatWithIndex(XElement radicandElement, XElement indexElement, FormattingContext context)
         {
             context.Writer.Write(@"\sqrt[");
             context.InnerElementsHandler.Invoke(indexElement);
@@ -29,7 +29,7 @@ namespace DocumentFormatter.Core.Formatters
             context.Writer.Write(@"}");
         }
 
-        private void FormatWithoutIndex(XElement radicandElement, FormattingContext context)
+        private static void FormatWithoutIndex(XElement radicandElement, FormattingContext context)
         {
             context.Writer.Write(@"\sqrt{");
             context.InnerElementsHandler.Invoke(radicandElement);
