@@ -18,9 +18,9 @@
     </Grid.RowDefinitions>
 
     <Label Grid.Row="0" Content="Введите тему урока" VerticalContentAlignment="Center"/>
-    <TextBox Grid.Row="1" Name="TitelTextBox" VerticalContentAlignment="Center" TextChanged="ValidateState"/>
+    <TextBox Grid.Row="1" Name="TitelTextBox" VerticalContentAlignment="Center" TextChanged="UpdateValidation"/>
     <Label Grid.Row="2" Content="Введите номер теста" VerticalContentAlignment="Center"/>
-    <TextBox Grid.Row="3" Name="TestNumberTextBox" VerticalContentAlignment="Center" TextChanged="ValidateState"/>
+    <TextBox Grid.Row="3" Name="TestNumberTextBox" VerticalContentAlignment="Center" TextChanged="UpdateValidation"/>
 
     <Grid Grid.Row="4" VerticalAlignment="Center">
       <Grid.ColumnDefinitions>

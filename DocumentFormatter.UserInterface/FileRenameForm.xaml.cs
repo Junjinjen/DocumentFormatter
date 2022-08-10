@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace DocumentFormatter.UserInterface
 {
@@ -15,72 +14,86 @@ namespace DocumentFormatter.UserInterface
         private const string AbstractFileFormat = "{0}. Конспект. ({1})";
         private const string SubtitlesFileFormat = "{0}. Субтитри. ({1})";
         private const string PictureWithNumberFileFormat = "{0}. Тест {1}. ({2})";
+        private const string DateFormatCulture = "uk-UA";
 
         private readonly string _filename;
-        private string _selectedFormat;
+        private Func<string> _filenameProvider;
 
         public FileRenameForm(string filename)
         {
             InitializeComponent();
 
             _filename = filename;
-            ValidateState(null, null);
-            TestNumberTextBox.IsEnabled = false;
+
+            PictureFormatUnchecked(null, null);
         }
 
         private void FileRenameCommand(object sender, RoutedEventArgs e)
         {
-            var date = DateTime.Now.ToString("HHmmss, dddd dd, MMMM yyyy", CultureInfo.CreateSpecificCulture("uk-UA"));
-
-            string newFilename;
-            if (TestNumberTextBox.IsEnabled)
-            {
-                newFilename = string.Format(_selectedFormat, TitelTextBox.Text, TestNumberTextBox.Text, date);
-            }
-            else
-            {
-                newFilename = string.Format(_selectedFormat, TitelTextBox.Text, date);
-            }
-
             var extension = Path.GetExtension(_filename);
             var path = Path.GetDirectoryName(_filename);
-            var file = Path.Combine(path, $"{newFilename}{extension}");
+            var formattedFilename = _filenameProvider.Invoke();
 
-            File.Move(_filename, file);
+            
+            var newFilename = Path.Combine(path, $"{formattedFilename}{extension}");
+
+            File.Move(_filename, newFilename);
 
             Close();
         }
 
         private void SourcesFormatChecked(object sender, RoutedEventArgs e)
         {
-            _selectedFormat = SourcesFileFormat;
+            _filenameProvider = () =>
+            {
+                var date = GetCurrentDateString();
+                var title = TitelTextBox.Text;
+                return string.Format(SourcesFileFormat, title, date);
+            };
         }
 
         private void AbstractFormatChecked(object sender, RoutedEventArgs e)
         {
-            _selectedFormat = AbstractFileFormat;
+            _filenameProvider = () =>
+            {
+                var date = GetCurrentDateString();
+                var title = TitelTextBox.Text;
+                return string.Format(AbstractFileFormat, title, date);
+            };
         }
 
         private void SubtitlesFormatChecked(object sender, RoutedEventArgs e)
         {
-            _selectedFormat = SubtitlesFileFormat;
+            _filenameProvider = () =>
+            {
+                var date = GetCurrentDateString();
+                var title = TitelTextBox.Text;
+                return string.Format(SubtitlesFileFormat, title, date);
+            };
         }
 
         private void PictureFormatChecked(object sender, RoutedEventArgs e)
         {
-            _selectedFormat = PictureWithNumberFileFormat;
+            _filenameProvider = () =>
+            {
+                var date = GetCurrentDateString();
+                var title = TitelTextBox.Text;
+                var testNumber = TestNumberTextBox.Text;
+                return string.Format(PictureWithNumberFileFormat, title, testNumber, date);
+            };
+
             TestNumberTextBox.IsEnabled = true;
-            ValidateState(null, null);
+            UpdateValidation(sender, e);
         }
 
         private void PictureFormatUnchecked(object sender, RoutedEventArgs e)
         {
             TestNumberTextBox.IsEnabled = false;
             TestNumberTextBox.Text = string.Empty;
-            ValidateState(null, null);
+            UpdateValidation(sender, e);
         }
 
-        private void ValidateState(object sender, TextChangedEventArgs e)
+        private void UpdateValidation(object sender, EventArgs e)
         {
             if (IsTestNumberTextBoxValid() && IsTitelTextBoxValid())
             {
@@ -89,6 +102,11 @@ namespace DocumentFormatter.UserInterface
             }
 
             RenameButton.IsEnabled = false;
+        }
+
+        private static string GetCurrentDateString()
+        {
+            return DateTime.Now.ToString("HHmmss, dddd dd, MMMM yyyy", CultureInfo.CreateSpecificCulture(DateFormatCulture));
         }
 
         private bool IsTestNumberTextBoxValid()
