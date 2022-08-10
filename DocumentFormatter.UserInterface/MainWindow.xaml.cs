@@ -1,8 +1,11 @@
 ﻿using DocumentFormatter.Core;
 using DocumentFormatter.Core.Formatters;
 using Microsoft.Win32;
+using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Windows;
 
 namespace DocumentFormatter.UserInterface
@@ -12,6 +15,7 @@ namespace DocumentFormatter.UserInterface
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string TextFormatterReplacements = "TextFormatterReplacements";
         private const string OpenFileDialogFilter = @"Word File|*.docx;*.doc";
 
         private readonly IDocumentFormatter _documentFormatter = GetDocumentFormatter();
@@ -44,6 +48,7 @@ namespace DocumentFormatter.UserInterface
 
         private static List<IElementFormatter> GetElementFormatters()
         {
+            var replacementDictionary = GetReplacementDictionary();
             return new List<IElementFormatter>
             {
                 new ParagraphFormatter(),
@@ -51,11 +56,14 @@ namespace DocumentFormatter.UserInterface
                 new FractionFormatter(),
                 new ExponentFormatter(),
                 new RadicalFormatter(),
-                new TextFormatter(new Dictionary<string, string>
-                {
-                    { @"⋅", @"\cdot" },
-                }),
+                new TextFormatter(replacementDictionary),
             };
+        }
+
+        private static Dictionary<string, string> GetReplacementDictionary()
+        {
+            var table = ConfigurationManager.GetSection(TextFormatterReplacements) as Hashtable;
+            return table.Cast<DictionaryEntry>().ToDictionary(x => x.Key as string, x => x.Value as string);
         }
 
         private void LoadFile(string filename)
