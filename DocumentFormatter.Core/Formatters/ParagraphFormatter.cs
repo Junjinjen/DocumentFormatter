@@ -8,9 +8,9 @@ namespace DocumentFormatter.Core.Formatters
     {
         protected override string TagName => "p";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> next)
+        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
         {
-            next.Invoke(element, writer);
+            innerElementsHandler.Invoke(element, writer);
             writer.WriteLine();
         }
     }

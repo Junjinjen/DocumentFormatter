@@ -9,7 +9,7 @@ namespace DocumentFormatter.Core
     {
         bool IsApplicable(XElement element);
 
-        void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> next);
+        void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler);
     }
 
     public abstract class FormatterBase : IElementFormatter
@@ -21,7 +21,7 @@ namespace DocumentFormatter.Core
             return element.Name.LocalName == TagName;
         }
 
-        public abstract void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> next);
+        public abstract void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler);
 
         protected static XElement GetChildNode(XElement element, string name)
         {

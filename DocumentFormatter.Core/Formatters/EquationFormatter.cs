@@ -8,10 +8,10 @@ namespace DocumentFormatter.Core.Formatters
     {
         protected override string TagName => "oMath";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> next)
+        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
         {
             writer.Write(@"\(");
-            next.Invoke(element, writer);
+            innerElementsHandler.Invoke(element, writer);
             writer.Write(@"\)");
         }
     }

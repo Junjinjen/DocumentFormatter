@@ -43,14 +43,14 @@ namespace DocumentFormatter.Core
             var formatter = _formatters.FirstOrDefault(x => x.IsApplicable(element));
             if (formatter != null)
             {
-                formatter.Format(element, writer, FormatChildElements);
+                formatter.Format(element, writer, FormatInnerElements);
                 return;
             }
 
-            FormatChildElements(element, writer);
+            FormatInnerElements(element, writer);
         }
 
-        private void FormatChildElements(XElement element, StreamWriter writer)
+        private void FormatInnerElements(XElement element, StreamWriter writer)
         {
             var childElements = element.Elements();
             foreach (var childElement in childElements)

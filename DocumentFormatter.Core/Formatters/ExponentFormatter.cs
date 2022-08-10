@@ -8,14 +8,14 @@ namespace DocumentFormatter.Core.Formatters
     {
         protected override string TagName => "sSup";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> next)
+        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
         {
             var baseElement = GetChildNode(element, "e");
             var exponentElement = GetChildNode(element, "sup");
 
-            next.Invoke(baseElement, writer);
+            innerElementsHandler.Invoke(baseElement, writer);
             writer.Write(@"^{");
-            next.Invoke(exponentElement, writer);
+            innerElementsHandler.Invoke(exponentElement, writer);
             writer.Write(@"}");
         }
     }

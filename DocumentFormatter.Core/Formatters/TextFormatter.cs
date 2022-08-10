@@ -16,13 +16,13 @@ namespace DocumentFormatter.Core.Formatters
 
         protected override string TagName => "t";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> next)
+        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
         {
             var result = _replacementDictionary.TryGetValue(element.Value, out var replacement);
             var value = result ? replacement : element.Value;
 
             writer.Write(value);
-            next.Invoke(element, writer);
+            innerElementsHandler.Invoke(element, writer);
         }
     }
 }

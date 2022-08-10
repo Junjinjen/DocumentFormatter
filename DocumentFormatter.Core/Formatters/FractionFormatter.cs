@@ -8,15 +8,15 @@ namespace DocumentFormatter.Core.Formatters
     {
         protected override string TagName => "f";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> next)
+        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
         {
             var numeratorElement = GetChildNode(element, "num");
             var denominatorElement = GetChildNode(element, "den");
 
             writer.Write(@"\frac{");
-            next.Invoke(numeratorElement, writer);
+            innerElementsHandler.Invoke(numeratorElement, writer);
             writer.Write(@"}{");
-            next.Invoke(denominatorElement, writer);
+            innerElementsHandler.Invoke(denominatorElement, writer);
             writer.Write(@"}");
         }
     }
