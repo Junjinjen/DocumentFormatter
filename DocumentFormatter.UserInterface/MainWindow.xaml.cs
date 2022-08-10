@@ -1,6 +1,7 @@
 ﻿using DocumentFormatter.Core;
 using DocumentFormatter.Core.Formatters;
 using Microsoft.Win32;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -48,22 +49,31 @@ namespace DocumentFormatter.UserInterface
 
         private static List<IElementFormatter> GetElementFormatters()
         {
+            var formatters = GetDefaultConstructibleElementFormatters();
+
             var replacementDictionary = GetReplacementDictionary();
-            return new List<IElementFormatter>
-            {
-                new ParagraphFormatter(),
-                new EquationFormatter(),
-                new FractionFormatter(),
-                new ExponentFormatter(),
-                new RadicalFormatter(),
-                new TextFormatter(replacementDictionary),
-            };
+            formatters.Add(new TextFormatter(replacementDictionary));
+
+            return formatters;
+        }
+
+        private static List<IElementFormatter> GetDefaultConstructibleElementFormatters()
+        {
+            var formatterInterfaceType = typeof(IElementFormatter);
+            var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes());
+            var query = from type in types
+                        where !type.IsInterface && !type.IsAbstract && !type.IsGenericType
+                        where formatterInterfaceType.IsAssignableFrom(type)
+                        where type.GetConstructor(Type.EmptyTypes) != null
+                        select (IElementFormatter)Activator.CreateInstance(type);
+
+            return query.ToList();
         }
 
         private static Dictionary<string, string> GetReplacementDictionary()
         {
             var table = ConfigurationManager.GetSection(TextFormatterReplacements) as Hashtable;
-            return table.Cast<DictionaryEntry>().ToDictionary(x => x.Key as string, x => x.Value as string);
+            return table.Cast<DictionaryEntry>().ToDictionary(x => (string)x.Key, x => (string)x.Value);
         }
 
         private void LoadFile(string filename)
