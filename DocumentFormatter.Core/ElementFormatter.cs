@@ -25,7 +25,7 @@ namespace DocumentFormatter.Core
 
         protected static XElement GetChildNode(XElement element, string name)
         {
-            return element.Elements().First(x => x.Name.LocalName == name);
+            return element.Elements().FirstOrDefault(x => x.Name.LocalName == name);
         }
     }
 }
