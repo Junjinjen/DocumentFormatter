@@ -45,7 +45,6 @@ namespace DocumentFormatter.UserInterface
         {
             var openFileDialog = new OpenFileDialog
             {
-                Filter = OpenFileDialogFilter,
                 CheckFileExists = true,
             };
 
