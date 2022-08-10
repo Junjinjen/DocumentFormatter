@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DocumentFormatter.UserInterface"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Катя бек &lt;3"
+        Height="450" Width="800">
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
@@ -13,8 +14,9 @@
     </Grid.RowDefinitions>
 
     <Menu Grid.Row="0">
-      <MenuItem Header="File">
-        <MenuItem Header="Open" Click="OpenFileCommand"/>
+      <MenuItem Header="Файл">
+        <MenuItem Header="Открыть" Click="OpenFileCommand"/>
+        <MenuItem Header="Переименовать" Click="FileRenameCommand"/>
       </MenuItem>
     </Menu>
 

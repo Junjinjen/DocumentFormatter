@@ -41,6 +41,24 @@ namespace DocumentFormatter.UserInterface
             }
         }
 
+        private void FileRenameCommand(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = OpenFileDialogFilter,
+                CheckFileExists = true,
+            };
+
+            var result = openFileDialog.ShowDialog();
+            if (result != true)
+            {
+                return;
+            }
+
+            var fileRenameForm = new FileRenameForm(openFileDialog.FileName);
+            fileRenameForm.ShowDialog();
+        }
+
         private static IDocumentFormatter GetDocumentFormatter()
         {
             var formatters = GetElementFormatters();
