@@ -1,5 +1,6 @@
 ﻿using DocumentFormatter.Core;
 using DocumentFormatter.Core.Formatters;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 using System;
 using System.Collections;
@@ -18,12 +19,20 @@ namespace DocumentFormatter.UserInterface
     {
         private const string TextFormatterReplacements = "TextFormatterReplacements";
         private const string OpenFileDialogFilter = @"Word File|*.docx;*.doc";
-
-        private readonly IDocumentFormatter _documentFormatter = GetDocumentFormatter();
+        private const string SettingsFilename = "appsettings.json";
+        private readonly IConfigurationRoot _configuration;
+        private readonly IDocumentFormatter _documentFormatter;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(SettingsFilename, optional: false, reloadOnChange: true);
+
+            _configuration = builder.Build();
+            _documentFormatter = GetDocumentFormatter();
         }
 
         private void OpenFileCommand(object sender, RoutedEventArgs e)
@@ -58,22 +67,6 @@ namespace DocumentFormatter.UserInterface
             fileRenameForm.ShowDialog();
         }
 
-        private static IDocumentFormatter GetDocumentFormatter()
-        {
-            var formatters = GetElementFormatters();
-            return new MicrosoftWordFormatter(formatters);
-        }
-
-        private static List<IElementFormatter> GetElementFormatters()
-        {
-            var formatters = GetDefaultConstructibleElementFormatters();
-
-            var replacementDictionary = GetReplacementDictionary();
-            formatters.Add(new TextFormatter(replacementDictionary));
-
-            return formatters;
-        }
-
         private static List<IElementFormatter> GetDefaultConstructibleElementFormatters()
         {
             var formatterInterfaceType = typeof(IElementFormatter);
@@ -87,10 +80,25 @@ namespace DocumentFormatter.UserInterface
             return query.ToList();
         }
 
-        private static Dictionary<string, string> GetReplacementDictionary()
+        private IDocumentFormatter GetDocumentFormatter()
         {
-            var table = ConfigurationManager.GetSection(TextFormatterReplacements) as Hashtable;
-            return table.Cast<DictionaryEntry>().ToDictionary(x => (string)x.Key, x => (string)x.Value);
+            var formatters = GetElementFormatters();
+            return new MicrosoftWordFormatter(formatters);
+        }
+
+        private List<IElementFormatter> GetElementFormatters()
+        {
+            var formatters = GetDefaultConstructibleElementFormatters();
+
+            var replacements = GetReplacements();
+            formatters.Add(new TextFormatter(replacements));
+
+            return formatters;
+        }
+
+        private List<Replacement> GetReplacements()
+        {
+            return _configuration.GetSection(TextFormatterReplacements).Get<List<Replacement>>();
         }
 
         private void LoadFile(string filename)
