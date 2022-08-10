@@ -1,18 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Xml.Linq;
-
-namespace DocumentFormatter.Core.Formatters
+﻿namespace DocumentFormatter.Core.Formatters
 {
     public class RoundBracketsFormatter : FormatterBase
     {
         protected override string TagName => "d";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
+        public override void Format(FormattingContext context)
         {
-            writer.Write(@"\left(");
-            innerElementsHandler.Invoke(element, writer);
-            writer.Write(@"\right)");
+            context.Writer.Write(@"\left(");
+            context.InnerElementsHandler.Invoke(context.Element);
+            context.Writer.Write(@"\right)");
         }
     }
 }

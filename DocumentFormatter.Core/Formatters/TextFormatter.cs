@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml.Linq;
+﻿using System.Collections.Generic;
 
 namespace DocumentFormatter.Core.Formatters
 {
@@ -25,13 +22,13 @@ namespace DocumentFormatter.Core.Formatters
 
         protected override string TagName => "t";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
+        public override void Format(FormattingContext context)
         {
-            var result = TryGetReplacement(element.Value, out var replacement);
-            var value = result ? replacement : element.Value;
+            var result = TryGetReplacement(context.Element.Value, out var replacement);
+            var value = result ? replacement : context.Element.Value;
 
-            writer.Write(value);
-            innerElementsHandler.Invoke(element, writer);
+            context.Writer.Write(value);
+            context.InnerElementsHandler.Invoke(context.Element);
         }
 
         private bool TryGetReplacement(string elementValue, out string formattedString)

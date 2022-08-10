@@ -1,23 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Xml.Linq;
-
-namespace DocumentFormatter.Core.Formatters
+﻿namespace DocumentFormatter.Core.Formatters
 {
     public class FractionFormatter : FormatterBase
     {
         protected override string TagName => "f";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
+        public override void Format(FormattingContext context)
         {
-            var numeratorElement = GetChildNode(element, "num");
-            var denominatorElement = GetChildNode(element, "den");
+            var numeratorElement = GetChildNode(context.Element, "num");
+            var denominatorElement = GetChildNode(context.Element, "den");
 
-            writer.Write(@"\frac{");
-            innerElementsHandler.Invoke(numeratorElement, writer);
-            writer.Write(@"}{");
-            innerElementsHandler.Invoke(denominatorElement, writer);
-            writer.Write(@"}");
+            context.Writer.Write(@"\frac{");
+            context.InnerElementsHandler.Invoke(numeratorElement);
+            context.Writer.Write(@"}{");
+            context.InnerElementsHandler.Invoke(denominatorElement);
+            context.Writer.Write(@"}");
         }
     }
 }

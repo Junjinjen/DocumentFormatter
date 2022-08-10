@@ -16,6 +16,8 @@ namespace DocumentFormatter.Core
     {
         private const string DocumentRelationshipType = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
         private const string DocumentPartPath = "/";
+
+        private static readonly Stack<string> _elementsStack = new();
         private readonly List<IElementFormatter> _formatters;
 
         public MicrosoftWordFormatter(List<IElementFormatter> formatters)
@@ -43,7 +45,19 @@ namespace DocumentFormatter.Core
             var formatter = _formatters.FirstOrDefault(x => x.IsApplicable(element));
             if (formatter != null)
             {
-                formatter.Format(element, writer, FormatInnerElements);
+                _elementsStack.Push(element.Name.LocalName);
+
+                var context = new FormattingContext
+                {
+                    Element = element,
+                    Writer = writer,
+                    InnerElementsHandler = (XElement e) => FormatInnerElements(e, writer),
+                    ElementsStack = _elementsStack,
+                };
+
+                formatter.Format(context);
+
+                _elementsStack.Pop();
                 return;
             }
 

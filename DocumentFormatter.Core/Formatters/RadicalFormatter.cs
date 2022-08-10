@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace DocumentFormatter.Core.Formatters
 {
@@ -8,34 +6,34 @@ namespace DocumentFormatter.Core.Formatters
     {
         protected override string TagName => "rad";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
+        public override void Format(FormattingContext context)
         {
-            var radicandElement = GetChildNode(element, "e");
-            var indexElement = GetChildNode(element, "deg");
+            var radicandElement = GetChildNode(context.Element, "e");
+            var indexElement = GetChildNode(context.Element, "deg");
 
             if (indexElement?.IsEmpty == false)
             {
-                FormatWithIndex(radicandElement, indexElement, writer, innerElementsHandler);
+                FormatWithIndex(radicandElement, indexElement, context);
                 return;
             }
 
-            FormatWithoutIndex(radicandElement, writer, innerElementsHandler);
+            FormatWithoutIndex(radicandElement, context);
         }
 
-        private void FormatWithIndex(XElement radicandElement, XElement indexElement, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
+        private void FormatWithIndex(XElement radicandElement, XElement indexElement, FormattingContext context)
         {
-            writer.Write(@"\sqrt[");
-            innerElementsHandler.Invoke(indexElement, writer);
-            writer.Write(@"]{");
-            innerElementsHandler.Invoke(radicandElement, writer);
-            writer.Write(@"}");
+            context.Writer.Write(@"\sqrt[");
+            context.InnerElementsHandler.Invoke(indexElement);
+            context.Writer.Write(@"]{");
+            context.InnerElementsHandler.Invoke(radicandElement);
+            context.Writer.Write(@"}");
         }
 
-        private void FormatWithoutIndex(XElement radicandElement, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
+        private void FormatWithoutIndex(XElement radicandElement, FormattingContext context)
         {
-            writer.Write(@"\sqrt{");
-            innerElementsHandler.Invoke(radicandElement, writer);
-            writer.Write(@"}");
+            context.Writer.Write(@"\sqrt{");
+            context.InnerElementsHandler.Invoke(radicandElement);
+            context.Writer.Write(@"}");
         }
     }
 }

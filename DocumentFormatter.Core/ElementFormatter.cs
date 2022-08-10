@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Xml.Linq;
 
 namespace DocumentFormatter.Core
@@ -9,7 +7,7 @@ namespace DocumentFormatter.Core
     {
         bool IsApplicable(XElement element);
 
-        void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler);
+        void Format(FormattingContext context);
     }
 
     public abstract class FormatterBase : IElementFormatter
@@ -21,7 +19,7 @@ namespace DocumentFormatter.Core
             return element.Name.LocalName == TagName;
         }
 
-        public abstract void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler);
+        public abstract void Format(FormattingContext context);
 
         protected static XElement GetChildNode(XElement element, string name)
         {

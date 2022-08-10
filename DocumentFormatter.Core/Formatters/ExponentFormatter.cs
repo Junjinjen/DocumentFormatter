@@ -1,25 +1,21 @@
-﻿using System;
-using System.IO;
-using System.Xml.Linq;
-
-namespace DocumentFormatter.Core.Formatters
+﻿namespace DocumentFormatter.Core.Formatters
 {
     public class ExponentFormatter : FormatterBase
     {
         protected override string TagName => "sSup";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
+        public override void Format(FormattingContext context)
         {
-            var baseElement = GetChildNode(element, "e");
-            var exponentElement = GetChildNode(element, "sup");
+            var baseElement = GetChildNode(context.Element, "e");
+            var exponentElement = GetChildNode(context.Element, "sup");
 
-            writer.Write(@"{");
-            innerElementsHandler.Invoke(baseElement, writer);
-            writer.Write(@"}");
+            context.Writer.Write(@"{");
+            context.InnerElementsHandler.Invoke(baseElement);
+            context.Writer.Write(@"}");
 
-            writer.Write(@"^{");
-            innerElementsHandler.Invoke(exponentElement, writer);
-            writer.Write(@"}");
+            context.Writer.Write(@"^{");
+            context.InnerElementsHandler.Invoke(exponentElement);
+            context.Writer.Write(@"}");
         }
     }
 }

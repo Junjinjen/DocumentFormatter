@@ -1,17 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Xml.Linq;
-
-namespace DocumentFormatter.Core.Formatters
+﻿namespace DocumentFormatter.Core.Formatters
 {
     public class ParagraphFormatter : FormatterBase
     {
         protected override string TagName => "p";
 
-        public override void Format(XElement element, StreamWriter writer, Action<XElement, StreamWriter> innerElementsHandler)
+        public override void Format(FormattingContext context)
         {
-            innerElementsHandler.Invoke(element, writer);
-            writer.WriteLine();
+            context.InnerElementsHandler.Invoke(context.Element);
+            context.Writer.WriteLine();
         }
     }
 }
