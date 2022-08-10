@@ -13,7 +13,10 @@ namespace DocumentFormatter.Core.Formatters
             var baseElement = GetChildNode(element, "e");
             var exponentElement = GetChildNode(element, "sup");
 
+            writer.Write(@"{");
             innerElementsHandler.Invoke(baseElement, writer);
+            writer.Write(@"}");
+
             writer.Write(@"^{");
             innerElementsHandler.Invoke(exponentElement, writer);
             writer.Write(@"}");
