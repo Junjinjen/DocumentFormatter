@@ -112,12 +112,12 @@ namespace DocumentFormatter.UserInterface
         private bool IsTestNumberTextBoxValid()
         {
             return !TestNumberTextBox.IsEnabled
-                || (!string.IsNullOrEmpty(TestNumberTextBox.Text) && TestNumberTextBox.Text.IndexOfAny(Path.GetInvalidPathChars()) < 0);
+                || (!string.IsNullOrEmpty(TestNumberTextBox.Text) && TestNumberTextBox.Text.IndexOfAny(Path.GetInvalidFileNameChars()) < 0);
         }
 
         private bool IsTitelTextBoxValid()
         {
-            return !string.IsNullOrEmpty(TitelTextBox.Text) && TitelTextBox.Text.IndexOfAny(Path.GetInvalidPathChars()) < 0;
+            return !string.IsNullOrEmpty(TitelTextBox.Text) && TitelTextBox.Text.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
         }
     }
 }
