@@ -20,7 +20,7 @@ namespace DocumentFormatter.Core.Formatters
 
         public TextFormatter(List<Replacement> replacements)
         {
-            _replacements = replacements;
+            _replacements = replacements.OrderBy(x => x.AllowPartialMatch).ToList();
         }
 
         protected override string TagName => "t";
