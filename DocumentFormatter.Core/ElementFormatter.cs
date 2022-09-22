@@ -25,5 +25,16 @@ namespace DocumentFormatter.Core
         {
             return element.Elements().FirstOrDefault(x => x.Name.LocalName == name);
         }
+
+        protected static bool HasChildNode(XElement element, string name)
+        {
+            return element.Elements().Any(x => x.Name.LocalName == name);
+        }
+
+        protected static bool HasNextNode(XElement element, string name, params string[] ignoredNodes)
+        {
+            var nextElement = element.ElementsAfterSelf().FirstOrDefault(x => !ignoredNodes.Contains(x.Name.LocalName));
+            return nextElement?.Name.LocalName == name;
+        }
     }
 }

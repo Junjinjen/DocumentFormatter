@@ -51,7 +51,7 @@ namespace DocumentFormatter.Core
                 {
                     Element = element,
                     Writer = writer,
-                    InnerElementsHandler = (XElement e) => FormatInnerElements(e, writer),
+                    InnerElementsHandler = x => FormatInnerElements(x, writer),
                     ElementsStack = _elementsStack,
                 };
 
