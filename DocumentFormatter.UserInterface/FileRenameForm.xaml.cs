@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace DocumentFormatter.UserInterface
@@ -42,12 +44,18 @@ namespace DocumentFormatter.UserInterface
             Close();
         }
 
+        private string GetTitle()
+        {
+            var title = Regex.Replace(TitelTextBox.Text, @":\s", " ");
+            return Regex.Replace(title, @"\s:", " ").Replace(':', ' ');
+        }
+
         private void SourcesFormatChecked(object sender, RoutedEventArgs e)
         {
             _filenameProvider = () =>
             {
                 var date = GetCurrentDateString();
-                var title = TitelTextBox.Text;
+                var title = GetTitle();
                 return string.Format(SourcesFileFormat, title, date);
             };
         }
@@ -57,7 +65,7 @@ namespace DocumentFormatter.UserInterface
             _filenameProvider = () =>
             {
                 var date = GetCurrentDateString();
-                var title = TitelTextBox.Text;
+                var title = GetTitle();
                 return string.Format(AbstractFileFormat, title, date);
             };
         }
@@ -67,7 +75,7 @@ namespace DocumentFormatter.UserInterface
             _filenameProvider = () =>
             {
                 var date = GetCurrentDateString();
-                var title = TitelTextBox.Text;
+                var title = GetTitle();
                 return string.Format(SubtitlesFileFormat, title, date);
             };
         }
@@ -77,7 +85,7 @@ namespace DocumentFormatter.UserInterface
             _filenameProvider = () =>
             {
                 var date = GetCurrentDateString();
-                var title = TitelTextBox.Text;
+                var title = GetTitle();
                 var testNumber = TestNumberTextBox.Text;
                 return string.Format(PictureWithNumberFileFormat, title, testNumber, date);
             };
@@ -117,7 +125,7 @@ namespace DocumentFormatter.UserInterface
 
         private bool IsTitelTextBoxValid()
         {
-            return !string.IsNullOrEmpty(TitelTextBox.Text) && TitelTextBox.Text.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
+            return !string.IsNullOrEmpty(TitelTextBox.Text) && TitelTextBox.Text.IndexOfAny(Path.GetInvalidFileNameChars().Except(new[] { ':' }).ToArray()) < 0;
         }
     }
 }
