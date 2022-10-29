@@ -3,9 +3,7 @@ using DocumentFormatter.Core.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -18,6 +16,7 @@ namespace DocumentFormatter.UserInterface
     public partial class MainWindow : Window
     {
         private const string TextFormatterReplacements = "TextFormatterReplacements";
+        private const string SymbolCodeReplacements = "SymbolCodeReplacements";
         private const string OpenFileDialogFilter = @"Word File|*.docx;*.doc";
         private const string SettingsFilename = "appsettings.json";
         private readonly IConfigurationRoot _configuration;
@@ -90,15 +89,23 @@ namespace DocumentFormatter.UserInterface
         {
             var formatters = GetDefaultConstructibleElementFormatters();
 
-            var replacements = GetReplacements();
-            formatters.Add(new TextFormatter(replacements));
+            var textReplacements = GetTextReplacements();
+            formatters.Add(new TextFormatter(textReplacements));
+
+            var symbolReplacements = GetSymbolReplacements();
+            formatters.Add(new SymbolCodeFormatter(symbolReplacements));
 
             return formatters;
         }
 
-        private List<Replacement> GetReplacements()
+        private List<Replacement> GetTextReplacements()
         {
             return _configuration.GetSection(TextFormatterReplacements).Get<List<Replacement>>();
+        }
+
+        private Dictionary<string, string> GetSymbolReplacements()
+        {
+            return _configuration.GetSection(SymbolCodeReplacements).Get<Dictionary<string, string>>();
         }
 
         private void LoadFile(string filename)
