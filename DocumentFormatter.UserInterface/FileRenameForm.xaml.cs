@@ -12,10 +12,10 @@ namespace DocumentFormatter.UserInterface
     /// </summary>
     public partial class FileRenameForm : Window
     {
-        private const string SourcesFileFormat = "{0}. Джерела. ({1})";
-        private const string AbstractFileFormat = "{0}. Конспект. ({1})";
-        private const string SubtitlesFileFormat = "{0}. Субтитри. ({1})";
-        private const string PictureWithNumberFileFormat = "{0}. Тест {1}. ({2})";
+        private const string SourcesFileFormat = "{0}. Джерела ({1})";
+        private const string AbstractFileFormat = "{0}. Конспект ({1})";
+        private const string SubtitlesFileFormat = "{0}. Субтитри ({1})";
+        private const string PictureWithNumberFileFormat = "{0}. Зображення. Завдання {1} ({2})";
         private const string DateFormatCulture = "uk-UA";
 
         private readonly string _filename;
