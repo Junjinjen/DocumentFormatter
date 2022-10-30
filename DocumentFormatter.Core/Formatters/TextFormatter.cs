@@ -62,6 +62,11 @@ namespace DocumentFormatter.Core.Formatters
         private static TextProperties GetTextProperties(FormattingContext context)
         {
             var propertiesElement = GetChildNode(context.Element, "rPr");
+            if (propertiesElement == null)
+            {
+                return new TextProperties();
+            }
+
             return new TextProperties
             {
                 Bold = HasChildNode(propertiesElement, "b"),
