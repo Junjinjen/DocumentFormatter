@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace DocumentFormatter.Core.Formatters
 {
@@ -69,10 +70,27 @@ namespace DocumentFormatter.Core.Formatters
 
             return new TextProperties
             {
-                Bold = HasChildNode(propertiesElement, "b"),
-                Italic = HasChildNode(propertiesElement, "i"),
-                Underline = HasChildNode(propertiesElement, "u"),
+                Bold = HasTextProperty(propertiesElement, "b", "0"),
+                Italic = HasTextProperty(propertiesElement, "i", "0"),
+                Underline = HasTextProperty(propertiesElement, "u", "none"),
             };
+        }
+
+        private static bool HasTextProperty(XElement propertiesElement, string propertyElementName, string falseValAttributeValue)
+        {
+            var propertyElement = GetChildNode(propertiesElement, propertyElementName);
+            if (propertyElement == null)
+            {
+                return false;
+            }
+
+            var valAttribute = propertyElement.Attributes().FirstOrDefault(x => x.Name.LocalName == "val");
+            if (valAttribute == null)
+            {
+                return true;
+            }
+
+            return valAttribute.Value != falseValAttributeValue;
         }
 
         private static bool CheckReplacement(Replacement replacement, string elementValue, Stack<string> elementsStack)
