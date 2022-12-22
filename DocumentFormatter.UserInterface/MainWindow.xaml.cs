@@ -66,6 +66,12 @@ namespace DocumentFormatter.UserInterface
             fileRenameForm.ShowDialog();
         }
 
+        private void QuizCommand(object sender, RoutedEventArgs e)
+        {
+            var quizForm = new QuizForm();
+            quizForm.ShowDialog();
+        }
+
         private static List<IElementFormatter> GetDefaultConstructibleElementFormatters()
         {
             var formatterInterfaceType = typeof(IElementFormatter);

@@ -1,0 +1,25 @@
+﻿<Window x:Class="DocumentFormatter.UserInterface.QuizForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DocumentFormatter.UserInterface"
+        mc:Ignorable="d"
+        Title="Quiz"
+        Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <DataGrid Grid.Row="0" Name="Data" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Минуты" Binding="{Binding Minutes}"/>
+                <DataGridTextColumn Header="Секунды" Binding="{Binding Seconds}"/>
+                <DataGridTextColumn Header="Id теста" Binding="{Binding TestId}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Copy Json" Width="150" HorizontalAlignment="Left" Height="20" Grid.RowSpan="2" VerticalAlignment="Bottom" Click="Button_Click"/>
+    </Grid>
+</Window>
