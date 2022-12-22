@@ -19,11 +19,12 @@ namespace DocumentFormatter.UserInterface
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var list = Data.ItemsSource as List<QuizInfo>;
-            var dictionarty = list.Select(x => new
-            {
-                Time = int.Parse(x.Minutes) * 60 + int.Parse(x.Seconds),
-                x.TestId
-            }).ToDictionary(x => x.Time, x => x.TestId);
+            var dictionarty = list.Where(x => !string.IsNullOrEmpty(x.TestId))
+                .Select(x => new
+                {
+                    Time = int.Parse(x.Minutes) * 60 + int.Parse(x.Seconds),
+                    x.TestId
+                }).ToDictionary(x => x.Time, x => x.TestId);
 
             var json = JsonSerializer.Serialize(dictionarty);
 
