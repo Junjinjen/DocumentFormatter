@@ -28,7 +28,7 @@ namespace DocumentFormatter.UserInterface
 
             var json = JsonSerializer.Serialize(dictionarty);
 
-            Clipboard.SetText(json);
+            Clipboard.SetDataObject(json);
         }
     }
 }
